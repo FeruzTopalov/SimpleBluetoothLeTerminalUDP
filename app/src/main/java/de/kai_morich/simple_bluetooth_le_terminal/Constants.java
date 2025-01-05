@@ -10,5 +10,11 @@ class Constants {
     // values have to be unique within each app
     static final int NOTIFY_MANAGER_START_FOREGROUND_SERVICE = 1001;
 
+    //prefs
+    static final String MY_PREFS = "MyPreferences";
+    static final String KEY_SWITCH_UDP_SENDER = "udpSenderSwitch";
+    static final String KEY_EDIT_IP = "editIPTextValue";
+    static final String KEY_EDIT_PORT = "editPortTextValue";
+
     private Constants() {}
 }

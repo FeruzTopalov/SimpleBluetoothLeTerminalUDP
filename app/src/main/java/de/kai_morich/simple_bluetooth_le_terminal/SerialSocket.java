@@ -1,5 +1,8 @@
 package de.kai_morich.simple_bluetooth_le_terminal;
 
+
+import static de.kai_morich.simple_bluetooth_le_terminal.UdpSender.sendUdpPacket;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
@@ -62,6 +65,10 @@ class SerialSocket extends BluetoothGattCallback {
     private static final UUID BLUETOOTH_LE_TIO_CHAR_RX          = UUID.fromString("00000002-0000-1000-8000-008025000000"); // N
     private static final UUID BLUETOOTH_LE_TIO_CHAR_TX_CREDITS  = UUID.fromString("00000003-0000-1000-8000-008025000000"); // W
     private static final UUID BLUETOOTH_LE_TIO_CHAR_RX_CREDITS  = UUID.fromString("00000004-0000-1000-8000-008025000000"); // I
+
+    private static final UUID BLUETOOTH_LE_HILINK_B40_SERVICE    = UUID.fromString("0000fff0-0000-1000-8000-00805f9b34fb");
+    private static final UUID BLUETOOTH_LE_HILINK_B40_CHAR_R    = UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb");
+    private static final UUID BLUETOOTH_LE_HILINK_B40_CHAR_W     = UUID.fromString("0000fff2-0000-1000-8000-00805f9b34fb");
 
     private static final int MAX_MTU = 512; // BLE standard does not limit, some BLE 4.2 devices support 251, various source say that Android has max 512
     private static final int DEFAULT_MTU = 23;
@@ -231,7 +238,8 @@ class SerialSocket extends BluetoothGattCallback {
                 delegate = new NrfDelegate();
             if (gattService.getUuid().equals(BLUETOOTH_LE_TIO_SERVICE))
                 delegate = new TelitDelegate();
-
+            if (gattService.getUuid().equals(BLUETOOTH_LE_HILINK_B40_SERVICE))
+                delegate = new HilinkDelegate();
             if(delegate != null) {
                 sync = delegate.connectCharacteristics(gattService);
                 break;
@@ -340,6 +348,9 @@ class SerialSocket extends BluetoothGattCallback {
             byte[] data = readCharacteristic.getValue();
             onSerialRead(data);
             Log.d(TAG,"read, len="+data.length);
+
+            //Directly relay received BLE data via UDP; works even if app is minimized
+            sendUdpPacket(data);
         }
     }
 
@@ -499,6 +510,16 @@ class SerialSocket extends BluetoothGattCallback {
                     onSerialConnectError(new IOException("no write characteristic (" + rw2prop + "/" + rw3prop + ")"));
                 }
             }
+            return true;
+        }
+    }
+
+    private class HilinkDelegate extends DeviceDelegate {
+        @Override
+        boolean connectCharacteristics(BluetoothGattService gattService) {
+            Log.d(TAG, "service hilink b40 uart");
+            readCharacteristic = gattService.getCharacteristic(BLUETOOTH_LE_HILINK_B40_CHAR_R);
+            writeCharacteristic = gattService.getCharacteristic(BLUETOOTH_LE_HILINK_B40_CHAR_W);
             return true;
         }
     }

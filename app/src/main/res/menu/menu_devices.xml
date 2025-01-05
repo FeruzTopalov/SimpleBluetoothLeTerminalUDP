@@ -13,4 +13,7 @@
     <item
         android:id="@+id/bt_settings"
         android:title="Bluetooth settings" />
+    <item
+        android:id="@+id/udp_settings"
+        android:title="UDP Settings" />
 </menu>

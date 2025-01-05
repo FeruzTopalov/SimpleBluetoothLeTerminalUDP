@@ -1,5 +1,7 @@
 package de.kai_morich.simple_bluetooth_le_terminal;
 
+import static de.kai_morich.simple_bluetooth_le_terminal.UdpSender.retrievePrefs;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -59,6 +61,9 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         setHasOptionsMenu(true);
         setRetainInstance(true);
         deviceAddress = getArguments().getString("device");
+
+        //Retrieve prefs on create
+        retrievePrefs();
     }
 
     @Override
@@ -105,6 +110,9 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             initialStart = false;
             getActivity().runOnUiThread(this::connect);
         }
+
+        //Retrieve prefs on create
+        retrievePrefs();
     }
 
     @Override
@@ -192,6 +200,10 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 }
             }
             return true;
+        } else if (id == R.id.udp_settings) {
+            Intent intent = new Intent(getActivity(), UdpSettingsActivity.class);
+            startActivity(intent);
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
@@ -272,6 +284,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         }
         receiveText.append(spn);
     }
+
 
     private void status(String str) {
         SpannableStringBuilder spn = new SpannableStringBuilder(str + '\n');

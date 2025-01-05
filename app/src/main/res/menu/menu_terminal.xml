@@ -20,4 +20,7 @@
         android:title="Notification if App in background"
         android:checkable="true"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/udp_settings"
+        android:title="UDP Settings" />
 </menu>

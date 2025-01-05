@@ -193,6 +193,10 @@ public class DevicesFragment extends ListFragment {
             intent.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
             startActivity(intent);
             return true;
+        } else if (id == R.id.udp_settings) {
+            Intent intent = new Intent(getActivity(), UdpSettingsActivity.class);
+            startActivity(intent);
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }

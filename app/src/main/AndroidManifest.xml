@@ -15,6 +15,9 @@
         android:usesPermissionFlags="neverForLocation" tools:targetApi="s" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+
     <!-- mipmap/ic_launcher created with Android Studio -> New -> Image Asset using @color/colorPrimaryDark as background color -->
     <application
         android:icon="@mipmap/ic_launcher"
@@ -30,6 +33,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".UdpSettingsActivity"
+            android:exported="false"
+            android:label="Title"
+            android:parentActivityName=".MainActivity" />
         <service
             android:name=".SerialService"
             android:foregroundServiceType="remoteMessaging|connectedDevice" />
